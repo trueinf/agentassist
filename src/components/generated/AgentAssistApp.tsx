@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Clock, Tag, ChevronRight, MapPin, AlertTriangle } from 'lucide-react';
+import { Mail, Clock, Tag, ChevronRight, MapPin, AlertTriangle, Play, Pause, SkipForward, SkipBack, Volume2 } from 'lucide-react';
 import { TopBanner } from './TopBanner';
 import { CallerTranscriptPanel } from './CallerTranscriptPanel';
 import { FlightRefundOptionsPanel } from './FlightRefundOptionsPanel';
 import { AICoPilotPanel } from './AICoPilotPanel';
+import audioFile from '../../Eleven labs audio.mp3';
 interface CallData {
   location: string;
   event: string;
@@ -27,7 +28,7 @@ const MOCK_CALL_PROGRESSION = [{
     text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
   }],
-  sentiment: 0.3,
+  sentiment: 0.85,
   intent: ["Rebooking", "Information"],
   likelihood: "85% likely to accept rebooking",
   suggestions: ["Acknowledge cancellation", "Offer rebooking options", "Check waiver eligibility"],
@@ -39,16 +40,8 @@ const MOCK_CALL_PROGRESSION = [{
     speaker: "Customer",
     text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
-  }, {
-    speaker: "Agent",
-    text: "I'm sorry to hear about your cancelled flight. Let me check your options for rebooking.",
-    timestamp: "14:32:45"
-  }, {
-    speaker: "Customer",
-    text: "I really need to get to New York today for an important meeting.",
-    timestamp: "14:33:10"
   }],
-  sentiment: 0.2,
+  sentiment: 0.88,
   intent: ["Rebooking", "Urgency", "Same-day travel"],
   likelihood: "70% likely to accept JFK option",
   suggestions: ["Offer same-day alternatives", "Check JFK availability", "Mention waiver policy"],
@@ -60,24 +53,8 @@ const MOCK_CALL_PROGRESSION = [{
     speaker: "Customer",
     text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
-  }, {
-    speaker: "Agent",
-    text: "I'm sorry to hear about your cancelled flight. Let me check your options for rebooking.",
-    timestamp: "14:32:45"
-  }, {
-    speaker: "Customer",
-    text: "I really need to get to New York today for an important meeting.",
-    timestamp: "14:33:10"
-  }, {
-    speaker: "Agent",
-    text: "I understand the urgency. I can see flights to JFK departing at 6:15 PM and 8:30 PM today.",
-    timestamp: "14:33:35"
-  }, {
-    speaker: "Customer",
-    text: "The 6:15 PM would work perfectly. Is there any additional cost?",
-    timestamp: "14:34:00"
   }],
-  sentiment: 0.6,
+  sentiment: 0.92,
   intent: ["Rebooking", "Cost inquiry", "Acceptance"],
   likelihood: "95% likely to accept 6:15 PM JFK flight",
   suggestions: ["Confirm no change fee due to waiver", "Process rebooking", "Offer seat selection"],
@@ -89,28 +66,8 @@ const MOCK_CALL_PROGRESSION = [{
     speaker: "Customer",
     text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
-  }, {
-    speaker: "Agent",
-    text: "I'm sorry to hear about your cancelled flight. Let me check your options for rebooking.",
-    timestamp: "14:32:45"
-  }, {
-    speaker: "Customer",
-    text: "I really need to get to New York today for an important meeting.",
-    timestamp: "14:33:10"
-  }, {
-    speaker: "Agent",
-    text: "I understand the urgency. I can see flights to JFK departing at 6:15 PM and 8:30 PM today.",
-    timestamp: "14:33:35"
-  }, {
-    speaker: "Customer",
-    text: "The 6:15 PM would work perfectly. Is there any additional cost?",
-    timestamp: "14:34:00"
-  }, {
-    speaker: "Agent",
-    text: "Great news—there are no additional costs due to the weather waiver. I'll book you on the 6:15 PM to JFK now and send the updated confirmation to your email.",
-    timestamp: "14:34:20"
   }],
-  sentiment: 0.9,
+  sentiment: 0.96,
   intent: ["Rebooking", "Confirmation", "No change fee"],
   likelihood: "Rebooking confirmed: 6:15 PM to JFK",
   suggestions: ["Send confirmation email/SMS", "Assist with seat selection", "Offer a goodwill gesture"],
@@ -181,6 +138,18 @@ export const AgentAssistApp = () => {
   const [callData, setCallData] = useState<CallData>(MOCK_CALL_PROGRESSION[0]);
   const [activeTab, setActiveTab] = useState<'overview' | 'update'>('overview');
   const [selectedEmail, setSelectedEmail] = useState<number | null>(null);
+  const [pnrProvided, setPnrProvided] = useState(false);
+  const [showPnrInput, setShowPnrInput] = useState(false);
+  const [pnrValue, setPnrValue] = useState('');
+  const [submittedPnr, setSubmittedPnr] = useState('');
+  const [autoAgentMessageShown, setAutoAgentMessageShown] = useState(false);
+  
+  // Audio player state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [audioSrc, setAudioSrc] = useState(audioFile);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Auto-select first email when switching to update tab
   React.useEffect(() => {
@@ -188,6 +157,28 @@ export const AgentAssistApp = () => {
       setSelectedEmail(1); // Select the first email (ID: 1)
     }
   }, [activeTab, selectedEmail]);
+  
+  // Auto agent message after 5 seconds for Play 1 (only if PNR not already provided)
+  React.useEffect(() => {
+    if (currentTurn === 0 && activeTab === 'overview' && !autoAgentMessageShown && !pnrProvided) {
+      const timer = setTimeout(() => {
+        const agentMessage = {
+          speaker: "Agent",
+          text: "I'm sorry to hear about your cancelled flight. Could you please provide me with your PNR number?",
+          timestamp: new Date().toLocaleTimeString('en-US', { hour12: false })
+        };
+        
+        setCallData(prev => ({
+          ...prev,
+          transcript: [...prev.transcript, agentMessage]
+        }));
+        setShowPnrInput(true);
+        setAutoAgentMessageShown(true);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentTurn, activeTab, autoAgentMessageShown, pnrProvided]);
   
   // Derive per-turn script snippets for AI Co-Pilot
   const scriptsForTurn = useMemo(() => {
@@ -220,11 +211,101 @@ export const AgentAssistApp = () => {
         return [] as any[];
     }
   }, [currentTurn]);
+  
+  // PNR handling functions
+  const handlePnrSubmit = () => {
+    if (pnrValue.trim()) {
+      const customerMessage = {
+        speaker: "Customer",
+        text: `My PNR is ${pnrValue}`,
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false })
+      };
+      
+      const agentVerifiedMessage = {
+        speaker: "Agent",
+        text: "Verified. Thank you for providing your PNR. I can see your booking details now.",
+        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false })
+      };
+      
+      setCallData(prev => ({
+        ...prev,
+        transcript: [...prev.transcript, customerMessage, agentVerifiedMessage]
+      }));
+      
+      setSubmittedPnr(pnrValue);
+      setPnrProvided(true);
+      setShowPnrInput(false);
+    }
+  };
+
+  const handlePnrKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handlePnrSubmit();
+    }
+  };
+
   // Manual progression controls (no autoplay)
   const playTurn = (turnIndex: number) => {
     const idx = Math.max(0, Math.min(MOCK_CALL_PROGRESSION.length - 1, turnIndex));
     setCurrentTurn(idx);
-    setCallData(MOCK_CALL_PROGRESSION[idx]);
+    
+    let updatedCallData = MOCK_CALL_PROGRESSION[idx];
+    
+    // If PNR has been provided, replace the original conversation with PNR conversation
+    if (pnrProvided && submittedPnr) {
+      const transcript = [...updatedCallData.transcript];
+      
+      // Keep only the first customer message, then add PNR conversation, then continue with remaining messages
+      const firstCustomerMessage = transcript[0];
+      const remainingMessages = transcript.slice(1);
+      
+      const pnrMessages = [
+        {
+          speaker: "Agent",
+          text: "I'm sorry to hear about your cancelled flight. Could you please provide me with your PNR number?",
+          timestamp: "18:39:56"
+        },
+        {
+          speaker: "Customer", 
+          text: `My PNR is ${submittedPnr}`,
+          timestamp: "18:40:01"
+        },
+        {
+          speaker: "Agent",
+          text: "Verified. Thank you for providing your PNR. I can see your booking details now.",
+          timestamp: "18:40:01"
+        }
+      ];
+      
+      // For Play 2, 3, 4 - add the remaining original messages after PNR conversation
+      let newTranscript = [firstCustomerMessage, ...pnrMessages];
+      if (idx > 0) {
+        newTranscript = [...newTranscript, ...remainingMessages];
+      }
+      
+      updatedCallData = {
+        ...updatedCallData,
+        transcript: newTranscript
+      };
+    }
+    
+    setCallData(updatedCallData);
+    
+    // Reset states for Play 1, but maintain PNR verification for other plays
+    if (idx === 0) {
+      // If PNR is already provided, don't reset autoAgentMessageShown to prevent duplicate messages
+      if (!pnrProvided) {
+        setAutoAgentMessageShown(false);
+      }
+      setShowPnrInput(false);
+      setPnrValue('');
+      // Don't reset submittedPnr and pnrProvided - keep them for persistence
+    } else {
+      // For Play 2, 3, 4 - if PNR was already provided, keep it verified
+      if (pnrProvided) {
+        setShowPnrInput(false);
+      }
+    }
   };
   const playNext = () => {
     playTurn(currentTurn + 1);
@@ -232,6 +313,68 @@ export const AgentAssistApp = () => {
   const handleSendConfirmation = () => {
     // Simulate sending confirmation
     console.log('Confirmation sent');
+  };
+
+  // Audio player functions
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+      console.log('Audio loaded successfully, duration:', audioRef.current.duration);
+    }
+  };
+
+  const handleAudioError = (e: any) => {
+    console.error('Audio failed to load:', e);
+    console.error('Audio source:', audioSrc);
+    
+    // Try fallback to public directory
+    if (audioSrc === audioFile) {
+      console.log('Trying fallback path...');
+      setAudioSrc('/Eleven labs audio.mp3');
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const time = parseFloat(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+  const skipForward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = Math.min(audioRef.current.currentTime + 10, duration);
+    }
+  };
+
+  const skipBackward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = Math.max(audioRef.current.currentTime - 10, 0);
+    }
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   // @return
@@ -346,7 +489,18 @@ export const AgentAssistApp = () => {
               Next
             </button>
           </div>
-          <CallerTranscriptPanel transcript={callData.transcript} sentiment={callData.sentiment} intent={callData.intent} likelihood={callData.likelihood} />
+          <CallerTranscriptPanel 
+            transcript={callData.transcript} 
+            sentiment={callData.sentiment} 
+            intent={callData.intent} 
+            likelihood={callData.likelihood}
+            pnrProvided={pnrProvided}
+            showPnrInput={showPnrInput}
+            pnrValue={pnrValue}
+            setPnrValue={setPnrValue}
+            onPnrSubmit={handlePnrSubmit}
+            onPnrKeyPress={handlePnrKeyPress}
+          />
         </motion.div>
 
             <motion.div className="lg:col-span-1" initial={{
@@ -415,14 +569,95 @@ export const AgentAssistApp = () => {
 
       {/* Update Tab Content - Email Interface */}
       {activeTab === 'update' && (
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 max-w-7xl mx-auto w-full">
-          {/* Left Panel - Email List */}
-          <motion.div 
-            className="bg-white rounded-lg shadow-sm border border-slate-200"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+        <div className="flex-1 p-6 max-w-7xl mx-auto w-full">
+          {/* Header with Audio Player on Right */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex-1"></div>
+            
+            {/* Compact Audio Player - Right Side */}
+            <motion.div 
+              className="bg-white rounded-md shadow-sm border border-slate-200 px-2 py-1 w-64"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 flex-1 min-w-0">
+                  <Volume2 className="w-2 h-2 text-slate-500 flex-shrink-0" />
+                  <span className="text-xs text-slate-700 truncate">Updates for the Day</span>
+                </div>
+                
+                {/* Compact Controls */}
+                <div className="flex items-center gap-0.5 ml-2">
+                  <button
+                    onClick={skipBackward}
+                    className="p-0.5 rounded hover:bg-slate-100 transition-colors"
+                    title="Skip backward 10s"
+                  >
+                    <SkipBack className="w-2 h-2 text-slate-500" />
+                  </button>
+                  
+                  <button
+                    onClick={togglePlay}
+                    className="p-0.5 bg-blue-600 hover:bg-blue-700 rounded text-white transition-colors"
+                    title={isPlaying ? 'Pause' : 'Play'}
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-2 h-2" />
+                    ) : (
+                      <Play className="w-2 h-2" />
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={skipForward}
+                    className="p-0.5 rounded hover:bg-slate-100 transition-colors"
+                    title="Skip forward 10s"
+                  >
+                    <SkipForward className="w-2 h-2 text-slate-500" />
+                  </button>
+                  
+                  <span className="text-xs text-slate-400 ml-1 text-xs">
+                    {formatTime(currentTime)}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Audio Element */}
+              <audio
+                ref={audioRef}
+                src={audioSrc}
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
+                onEnded={() => setIsPlaying(false)}
+                onError={handleAudioError}
+                preload="metadata"
+              />
+              
+              {/* Ultra Compact Progress Bar */}
+              <input
+                type="range"
+                min={0}
+                max={duration || 0}
+                value={currentTime}
+                onChange={handleSeek}
+                className="w-full h-0.5 bg-slate-200 rounded appearance-none cursor-pointer mt-0.5"
+                style={{
+                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, #e2e8f0 ${(currentTime / duration) * 100}%, #e2e8f0 100%)`
+                }}
+              />
+            </motion.div>
+          </div>
+
+          {/* Row Container for Flight Updates and Email Summary */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Panel - Flight Communication Updates */}
+            <motion.div 
+              className="bg-white rounded-lg shadow-sm border border-slate-200"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+            >
             <div className="p-4 border-b border-slate-200">
               <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
                 <Mail className="w-5 h-5" />
@@ -471,13 +706,13 @@ export const AgentAssistApp = () => {
             </div>
           </motion.div>
 
-          {/* Right Panel - Email Summary */}
-          <motion.div 
-            className="bg-white rounded-lg shadow-sm border border-slate-200"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
+            {/* Right Panel - Email Summary */}
+            <motion.div 
+              className="bg-white rounded-lg shadow-sm border border-slate-200"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
             {selectedEmail ? (
               <div className="h-full flex flex-col">
                 <div className="p-4 border-b border-slate-200">
@@ -575,6 +810,7 @@ export const AgentAssistApp = () => {
               </div>
             )}
           </motion.div>
+          </div>
         </div>
       )}
     </div>;

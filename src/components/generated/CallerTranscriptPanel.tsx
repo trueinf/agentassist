@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Headphones, TrendingUp, TrendingDown, Minus, Tag, Target, CheckCircle } from 'lucide-react';
+import { User, Headphones, TrendingUp, TrendingDown, Minus, Tag, Target, CheckCircle, Send } from 'lucide-react';
 interface TranscriptEntry {
   speaker: string;
   text: string;
@@ -11,6 +11,12 @@ interface CallerTranscriptPanelProps {
   sentiment: number;
   intent: string[];
   likelihood: string;
+  pnrProvided?: boolean;
+  showPnrInput?: boolean;
+  pnrValue?: string;
+  setPnrValue?: (value: string) => void;
+  onPnrSubmit?: () => void;
+  onPnrKeyPress?: (e: React.KeyboardEvent) => void;
 }
 const SENTIMENT_CONFIG = {
   positive: {
@@ -36,7 +42,13 @@ export const CallerTranscriptPanel = ({
   transcript,
   sentiment,
   intent,
-  likelihood
+  likelihood,
+  pnrProvided = false,
+  showPnrInput = false,
+  pnrValue = '',
+  setPnrValue,
+  onPnrSubmit,
+  onPnrKeyPress
 }: CallerTranscriptPanelProps) => {
   // Keep transcript scrolled within its own container without shifting the page
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,7 +87,7 @@ export const CallerTranscriptPanel = ({
               <div className="flex items-center space-x-2">
                 <SentimentIcon className={`w-5 h-5 ${sentimentConfig.color}`} />
                 <span className={`text-sm font-medium ${sentimentConfig.color}`}>
-                  <span>Agent Sentiment</span>
+                  <span>Agent Behaviour</span>
                 </span>
               </div>
               <div className="flex items-center space-x-2">
@@ -110,7 +122,11 @@ export const CallerTranscriptPanel = ({
               {['VERIFY PNR', 'CHECK TICKET DETAILS', 'CHECK COMMENTS', 'CHECK TRAVEL HISTORY'].map((item, index) => (
                 <motion.div 
                   key={item}
-                  className="flex items-center space-x-2 p-2 bg-green-50 border border-green-200 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+                  className={`flex items-center space-x-2 p-2 rounded-lg cursor-pointer transition-colors ${
+                    pnrProvided 
+                      ? 'bg-green-50 border border-green-200 hover:bg-green-100' 
+                      : 'bg-slate-50 border border-slate-200'
+                  }`}
                   initial={{
                     opacity: 0,
                     x: -10
@@ -121,17 +137,36 @@ export const CallerTranscriptPanel = ({
                   }}
                   transition={{
                     duration: 0.3,
-                    delay: 0.3 + (index * 0.1)
+                    delay: pnrProvided ? 0.3 + (index * 0.2) : 0.3
                   }}
-                  whileHover={{
+                  whileHover={pnrProvided ? {
                     scale: 1.02
-                  }}
-                  whileTap={{
+                  } : {}}
+                  whileTap={pnrProvided ? {
                     scale: 0.98
-                  }}
+                  } : {}}
                 >
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                  <span className="text-xs font-medium text-green-800">{item}</span>
+                  {pnrProvided ? (
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ 
+                        duration: 0.5, 
+                        delay: 0.3 + (index * 0.2),
+                        type: "spring",
+                        stiffness: 200
+                      }}
+                    >
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    </motion.div>
+                  ) : (
+                    <div className="w-4 h-4 border-2 border-slate-300 rounded-full" />
+                  )}
+                  <span className={`text-xs font-medium ${
+                    pnrProvided ? 'text-green-800' : 'text-slate-500'
+                  }`}>
+                    {item}
+                  </span>
                 </motion.div>
               ))}
             </div>
@@ -220,6 +255,39 @@ export const CallerTranscriptPanel = ({
                 </div>
               </motion.div>)}
           </AnimatePresence>
+          
+          {/* PNR Input Field */}
+          {showPnrInput && (
+            <motion.div 
+              className="flex items-center space-x-3 mt-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-slate-100">
+                <User className="w-4 h-4 text-slate-600" />
+              </div>
+              <div className="flex-1 flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={pnrValue}
+                  onChange={(e) => setPnrValue && setPnrValue(e.target.value)}
+                  onKeyPress={onPnrKeyPress}
+                  placeholder="Enter your PNR number..."
+                  className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  autoFocus
+                />
+                <button
+                  onClick={onPnrSubmit}
+                  className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  disabled={!pnrValue?.trim()}
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+          
           <div ref={transcriptEndRef} />
         </div>
       </div>

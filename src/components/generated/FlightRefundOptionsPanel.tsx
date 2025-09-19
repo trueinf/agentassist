@@ -115,7 +115,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 11
   },
   {
-    id: 'uae3670',
+    id: 'ue3670',
     departure: 'JFK',
     arrival: 'MDW',
     departureTime: '19:05',
@@ -163,7 +163,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 16
   },
   {
-    id: 'uae1412',
+    id: 'ue1412',
     departure: 'BDL',
     arrival: 'ORD',
     departureTime: '19:20',
@@ -187,7 +187,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 10
   },
   {
-    id: 'uae332',
+    id: 'ue332',
     departure: 'BWI',
     arrival: 'ORD',
     departureTime: '17:55',
@@ -263,7 +263,7 @@ const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 5
   },
   {
-    id: 'ue8998',
+    id: 'b68998',
     departure: 'EWR',
     arrival: 'YYZ',
     departureTime: '17:10',
@@ -275,7 +275,7 @@ const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 12
   },
   {
-    id: 'ue503',
+    id: 'as4503',
     departure: 'YYZ',
     arrival: 'ORD',
     departureTime: '19:30',
