@@ -91,7 +91,7 @@ const TABS = [{
 // Alternate airports within ~300 miles of EWR with sample options to Chicago (ORD/MDW)
 const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
   {
-    id: 'uae301',
+    id: 'ue301',
     departure: 'JFK',
     arrival: 'ORD',
     departureTime: '17:45',
