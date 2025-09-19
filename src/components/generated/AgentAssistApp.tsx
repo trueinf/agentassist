@@ -24,20 +24,20 @@ const MOCK_CALL_PROGRESSION = [{
   event: "Winter Storm Alert - ORD Operations Suspended",
   transcript: [{
     speaker: "Customer",
-    text: "Hi, I'm calling about my flight UA1234 from Chicago to New York that was cancelled.",
+    text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
   }],
   sentiment: 0.3,
   intent: ["Rebooking", "Information"],
   likelihood: "85% likely to accept rebooking",
   suggestions: ["Acknowledge cancellation", "Offer rebooking options", "Check waiver eligibility"],
-  caseNotes: ["Flight UA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking"]
+  caseNotes: ["Flight AA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking"]
 }, {
   location: "Chicago, IL",
   event: "Winter Storm Alert - ORD Operations Suspended",
   transcript: [{
     speaker: "Customer",
-    text: "Hi, I'm calling about my flight UA1234 from Chicago to New York that was cancelled.",
+    text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
   }, {
     speaker: "Agent",
@@ -52,13 +52,13 @@ const MOCK_CALL_PROGRESSION = [{
   intent: ["Rebooking", "Urgency", "Same-day travel"],
   likelihood: "70% likely to accept JFK option",
   suggestions: ["Offer same-day alternatives", "Check JFK availability", "Mention waiver policy"],
-  caseNotes: ["Flight UA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed"]
+  caseNotes: ["Flight AA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed"]
 }, {
   location: "Chicago, IL",
   event: "Winter Storm Alert - ORD Operations Suspended",
   transcript: [{
     speaker: "Customer",
-    text: "Hi, I'm calling about my flight UA1234 from Chicago to New York that was cancelled.",
+    text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
   }, {
     speaker: "Agent",
@@ -81,13 +81,13 @@ const MOCK_CALL_PROGRESSION = [{
   intent: ["Rebooking", "Cost inquiry", "Acceptance"],
   likelihood: "95% likely to accept 6:15 PM JFK flight",
   suggestions: ["Confirm no change fee due to waiver", "Process rebooking", "Offer seat selection"],
-  caseNotes: ["Flight UA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed", "Interested in 6:15 PM JFK flight"]
+  caseNotes: ["Flight AA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed", "Interested in 6:15 PM JFK flight"]
 }, {
   location: "Chicago, IL",
   event: "Winter Storm Alert - ORD Operations Suspended",
   transcript: [{
     speaker: "Customer",
-    text: "Hi, I'm calling about my flight UA1234 from Chicago to New York that was cancelled.",
+    text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
   }, {
     speaker: "Agent",
@@ -115,7 +115,7 @@ const MOCK_CALL_PROGRESSION = [{
   likelihood: "Rebooking confirmed: 6:15 PM to JFK",
   suggestions: ["Send confirmation email/SMS", "Assist with seat selection", "Offer a goodwill gesture"],
   caseNotes: [
-    "Rebooked to UA1456 ORD-JFK at 6:15 PM",
+    "Rebooked to DL1456 ORD-JFK at 6:15 PM",
     "No change fee applied under weather waiver",
     "Confirmation to be sent to customer"
   ]
@@ -125,53 +125,53 @@ const MOCK_CALL_PROGRESSION = [{
 const DUMMY_EMAILS = [
   {
     id: 1,
-    from: "notifications@united.com",
-    subject: "Flight Delay Notification - UA1234",
+    from: "notifications@aa.com",
+    subject: "Flight Delay Notification - AA1234",
     timestamp: "2024-01-15 13:45",
-    content: "Dear Valued Customer,\n\nWe regret to inform you that your flight UA1234 scheduled to depart from Chicago O'Hare (ORD) to New York LaGuardia (LGA) at 3:30 PM has been delayed due to severe winter weather conditions affecting the Chicago area.\n\nNew estimated departure time: 6:15 PM\nReason: Winter storm with heavy snow and strong winds\nCurrent status: Aircraft de-icing in progress\n\nWe apologize for any inconvenience this may cause and appreciate your patience during these challenging weather conditions.\n\nBest regards,\nUnited Airlines Customer Service",
+    content: "Dear Valued Customer,\n\nWe regret to inform you that your flight AA1234 scheduled to depart from Chicago O'Hare (ORD) to New York LaGuardia (LGA) at 3:30 PM has been delayed due to severe winter weather conditions affecting the Chicago area.\n\nNew estimated departure time: 6:15 PM\nReason: Winter storm with heavy snow and strong winds\nCurrent status: Aircraft de-icing in progress\n\nWe apologize for any inconvenience this may cause and appreciate your patience during these challenging weather conditions.\n\nBest regards,\nAmerican Airlines Customer Service",
     category: "delay",
-    summary: "Flight UA1234 delayed from 3:30 PM to 6:15 PM due to winter storm conditions in Chicago. Aircraft currently undergoing de-icing procedures.",
+    summary: "Flight AA1234 delayed from 3:30 PM to 6:15 PM due to winter storm conditions in Chicago. Aircraft currently undergoing de-icing procedures.",
     resolution: "This delay occurred due to severe winter weather conditions with heavy snow and strong winds at Chicago O'Hare. Your new departure time is 6:15 PM today. The aircraft is currently undergoing mandatory de-icing procedures for safety. We recommend arriving at the gate 30 minutes before the new departure time."
   },
   {
     id: 2,
-    from: "alerts@united.com",
+    from: "alerts@aa.com",
     subject: "Weather Advisory - ORD Operations Update",
     timestamp: "2024-01-15 12:30",
-    content: "WEATHER ADVISORY - CHICAGO O'HARE INTERNATIONAL AIRPORT\n\nEffective immediately, Chicago O'Hare Airport is experiencing significant operational impacts due to a major winter storm system.\n\nCurrent Conditions:\n- Heavy snowfall: 2-3 inches per hour\n- Wind gusts: 35-45 mph\n- Visibility: Less than 1/4 mile\n- Temperature: 15°F (-9°C)\n\nAirport Status:\n- Runways: 2 of 8 operational\n- Ground stop in effect until 5:00 PM\n- De-icing operations ongoing\n\nPassengers are advised to check flight status before departing for the airport. Rebooking options are available without change fees for affected flights.\n\nStay safe and warm,\nUnited Operations Center",
+    content: "WEATHER ADVISORY - CHICAGO O'HARE INTERNATIONAL AIRPORT\n\nEffective immediately, Chicago O'Hare Airport is experiencing significant operational impacts due to a major winter storm system.\n\nCurrent Conditions:\n- Heavy snowfall: 2-3 inches per hour\n- Wind gusts: 35-45 mph\n- Visibility: Less than 1/4 mile\n- Temperature: 15°F (-9°C)\n\nAirport Status:\n- Runways: 2 of 8 operational\n- Ground stop in effect until 5:00 PM\n- De-icing operations ongoing\n\nPassengers are advised to check flight status before departing for the airport. Rebooking options are available without change fees for affected flights.\n\nStay safe and warm,\nAmerican Airlines Operations Center",
     category: "weather",
     summary: "Major winter storm impacting ORD operations. Only 2 of 8 runways operational, ground stop until 5 PM. Heavy snow and low visibility affecting all flights.",
     resolution: "Due to the severe winter storm, Chicago O'Hare has limited operations until 5:00 PM. We recommend checking your flight status before heading to the airport. Rebooking options are available without change fees. Consider staying warm indoors and monitor updates through our app or website."
   },
   {
     id: 3,
-    from: "rebooking@united.com",
+    from: "rebooking@aa.com",
     subject: "Rebooking Options Available - No Change Fees",
     timestamp: "2024-01-15 14:20",
-    content: "Hello,\n\nDue to the weather-related disruptions at Chicago O'Hare, we want to make your rebooking process as smooth as possible.\n\nAvailable Options for UA1234 passengers:\n\n1. Same-day flights to LGA:\n   - UA1456 departing 6:15 PM (Limited seats)\n   - UA1678 departing 8:30 PM (Good availability)\n\n2. Alternative airports:\n   - Flights to JFK: Multiple options available\n   - Flights to EWR: Evening departures available\n\n3. Next-day options:\n   - Multiple morning departures with full availability\n\nAll rebooking options are available with no change fees due to the weather waiver policy. You can rebook online, through our mobile app, or by calling our customer service line.\n\nWe're here to help get you to your destination safely.\n\nUnited Customer Relations",
+    content: "Hello,\n\nDue to the weather-related disruptions at Chicago O'Hare, we want to make your rebooking process as smooth as possible.\n\nAvailable Options for AA1234 passengers:\n\n1. Same-day flights to LGA:\n   - UAL1456 departing 6:15 PM (Limited seats)\n   - UAL1678 departing 8:30 PM (Good availability)\n\n2. Alternative airports:\n   - Flights to JFK: Multiple options available\n   - Flights to EWR: Evening departures available\n\n3. Next-day options:\n   - Multiple morning departures with full availability\n\nAll rebooking options are available with no change fees due to the weather waiver policy. You can rebook online, through our mobile app, or by calling our customer service line.\n\nWe're here to help get you to your destination safely.\n\nAmerican Airlines Customer Relations",
     category: "rebooking",
-    summary: "Multiple rebooking options available for UA1234 passengers. Same-day alternatives to LGA, JFK, and EWR. No change fees apply due to weather waiver.",
-    resolution: "We have several options to get you to New York today: UA1456 at 6:15 PM to LGA (limited seats) or UA1678 at 8:30 PM to LGA. Alternative airports include JFK and Newark with multiple evening departures. All changes are free due to weather waiver. Book online, via our app, or call customer service to secure your preferred option."
+    summary: "Multiple rebooking options available for AA1234 passengers. Same-day alternatives to LGA, JFK, and EWR. No change fees apply due to weather waiver.",
+    resolution: "We have several options to get you to New York today: UAL1456 at 6:15 PM to LGA (limited seats) or UAL1678 at 8:30 PM to LGA. Alternative airports include JFK and Newark with multiple evening departures. All changes are free due to weather waiver. Book online, via our app, or call customer service to secure your preferred option."
   },
   {
     id: 4,
-    from: "notifications@united.com",
-    subject: "Flight Cancellation - UA1234 ORD to LGA",
+    from: "notifications@aa.com",
+    subject: "Flight Cancellation - AA1234 ORD to LGA",
     timestamp: "2024-01-15 15:45",
-    content: "Dear Customer,\n\nWe regret to inform you that flight UA1234 from Chicago O'Hare (ORD) to New York LaGuardia (LGA) originally scheduled for January 15, 2024, has been cancelled due to continued severe weather conditions.\n\nCancellation Details:\n- Original flight: UA1234, January 15, 3:30 PM departure\n- Reason: Winter storm - unsafe operating conditions\n- Airport closure: Extended ground stop at ORD\n\nImmediate Actions:\n1. Full refund automatically processed (5-7 business days)\n2. Rebooking options available at no additional cost\n3. Hotel accommodations available for stranded passengers\n4. Meal vouchers provided for delays over 3 hours\n\nRecommended Alternatives:\n- UA1456 departing tomorrow at 7:30 AM\n- UA1892 departing tomorrow at 11:15 AM\n- Alternative airports: JFK and EWR options available\n\nWe sincerely apologize for this disruption to your travel plans and appreciate your understanding during these exceptional circumstances.\n\nUnited Airlines Operations",
+    content: "Dear Customer,\n\nWe regret to inform you that flight AA1234 from Chicago O'Hare (ORD) to New York LaGuardia (LGA) originally scheduled for January 15, 2024, has been cancelled due to continued severe weather conditions.\n\nCancellation Details:\n- Original flight: AA1234, January 15, 3:30 PM departure\n- Reason: Winter storm - unsafe operating conditions\n- Airport closure: Extended ground stop at ORD\n\nImmediate Actions:\n1. Full refund automatically processed (5-7 business days)\n2. Rebooking options available at no additional cost\n3. Hotel accommodations available for stranded passengers\n4. Meal vouchers provided for delays over 3 hours\n\nRecommended Alternatives:\n- UAL1456 departing tomorrow at 7:30 AM\n- UAL1892 departing tomorrow at 11:15 AM\n- Alternative airports: JFK and EWR options available\n\nWe sincerely apologize for this disruption to your travel plans and appreciate your understanding during these exceptional circumstances.\n\nAmerican Airlines Operations",
     category: "cancellation",
-    summary: "UA1234 cancelled due to severe weather and unsafe conditions. Full refund processing, rebooking options available. Hotel and meal accommodations provided.",
-    resolution: "Your flight was cancelled due to unsafe weather conditions for passenger safety. You have three options: 1) Full refund (processed in 5-7 days), 2) Rebook on UA1456 tomorrow at 7:30 AM or UA1892 at 11:15 AM, or 3) Consider JFK/EWR alternatives. We'll provide hotel accommodation and meals if you're stranded overnight. Contact us to arrange your preferred solution."
+    summary: "AA1234 cancelled due to severe weather and unsafe conditions. Full refund processing, rebooking options available. Hotel and meal accommodations provided.",
+    resolution: "Your flight was cancelled due to unsafe weather conditions for passenger safety. You have three options: 1) Full refund (processed in 5-7 days), 2) Rebook on UAL1456 tomorrow at 7:30 AM or UAL1892 at 11:15 AM, or 3) Consider JFK/EWR alternatives. We'll provide hotel accommodation and meals if you're stranded overnight. Contact us to arrange your preferred solution."
   },
   {
     id: 5,
-    from: "compensation@united.com",
+    from: "compensation@aa.com",
     subject: "Travel Disruption Compensation - Your Rights",
     timestamp: "2024-01-15 16:30",
-    content: "Dear Valued Customer,\n\nWe understand that flight disruptions can significantly impact your travel plans, and we want to ensure you're aware of your rights and the compensation available to you.\n\nFor Weather-Related Cancellations:\n✓ Full refund or rebooking at no additional cost\n✓ Hotel accommodations (if stranded overnight)\n✓ Meal vouchers for extended delays\n✓ Ground transportation to/from hotel\n✓ Priority rebooking on next available flight\n\nAdditional Goodwill Gestures:\n- $200 travel credit for future United flights\n- Complimentary upgrade on your rebooked flight (subject to availability)\n- Expedited baggage handling\n- Access to United Club lounges during extended waits\n\nYour Passenger Rights:\n- Right to full refund within 24 hours of request\n- Right to rebooking without additional fees\n- Right to accommodation during overnight delays\n- Right to timely communication about flight status\n\nTo claim your compensation or discuss your options, please contact our customer relations team at 1-800-UNITED-1 or visit united.com/feedback.\n\nThank you for your patience and continued loyalty.\n\nUnited Customer Relations Team",
+    content: "Dear Valued Customer,\n\nWe understand that flight disruptions can significantly impact your travel plans, and we want to ensure you're aware of your rights and the compensation available to you.\n\nFor Weather-Related Cancellations:\n✓ Full refund or rebooking at no additional cost\n✓ Hotel accommodations (if stranded overnight)\n✓ Meal vouchers for extended delays\n✓ Ground transportation to/from hotel\n✓ Priority rebooking on next available flight\n\nAdditional Goodwill Gestures:\n- $200 travel credit for future American Airlines flights\n- Complimentary upgrade on your rebooked flight (subject to availability)\n- Expedited baggage handling\n- Access to Admirals Club lounges during extended waits\n\nYour Passenger Rights:\n- Right to full refund within 24 hours of request\n- Right to rebooking without additional fees\n- Right to accommodation during overnight delays\n- Right to timely communication about flight status\n\nTo claim your compensation or discuss your options, please contact our customer relations team at 1-800-433-7300 or visit aa.com/feedback.\n\nThank you for your patience and continued loyalty.\n\nAmerican Airlines Customer Relations Team",
     category: "compensation",
     summary: "Comprehensive compensation package for weather disruption including $200 travel credit, hotel accommodation, meals, and priority rebooking. Full passenger rights outlined.",
-    resolution: "As compensation for this weather disruption, you'll receive: $200 travel credit for future United flights, complimentary upgrade on your rebooked flight (when available), hotel and meal accommodations, and expedited baggage handling. To claim your compensation, call 1-800-UNITED-1 or visit united.com/feedback. Your satisfaction is our priority."
+    resolution: "As compensation for this weather disruption, you'll receive: $200 travel credit for future American Airlines flights, complimentary upgrade on your rebooked flight (when available), hotel and meal accommodations, and expedited baggage handling. To claim your compensation, call 1-800-433-7300 or visit aa.com/feedback. Your satisfaction is our priority."
   }
 ];
 
@@ -374,7 +374,7 @@ export const AgentAssistApp = () => {
             }}>
           <FlightRefundOptionsPanel
             filterArrival={currentTurn >= 1 ? 'JFK' : null}
-            highlightFlightId={currentTurn >= 2 ? 'ua1456' : null}
+            highlightFlightId={currentTurn >= 2 ? 'ual1456' : null}
           />
             </motion.div>
           </div>
@@ -428,7 +428,7 @@ export const AgentAssistApp = () => {
                 <Mail className="w-5 h-5" />
                 Flight Communication Updates
               </h3>
-              <p className="text-sm text-slate-500 mt-1">Recent emails regarding UA1234</p>
+              <p className="text-sm text-slate-500 mt-1">Recent emails regarding AA1234</p>
             </div>
             <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
               {DUMMY_EMAILS.map((email) => (

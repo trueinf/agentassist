@@ -20,7 +20,7 @@ interface AirlineInfo {
   tollNumber: string;
 }
 const FLIGHT_OPTIONS: FlightOption[] = [{
-  id: 'ua1456',
+  id: 'ual1456',
   departure: 'ORD',
   arrival: 'JFK',
   departureTime: '18:15',
@@ -31,7 +31,7 @@ const FLIGHT_OPTIONS: FlightOption[] = [{
   voucher: 0,
   seats: 12
 }, {
-  id: 'ua2234',
+  id: 'ual2234',
   departure: 'ORD',
   arrival: 'JFK',
   departureTime: '20:30',
@@ -42,7 +42,7 @@ const FLIGHT_OPTIONS: FlightOption[] = [{
   voucher: 0,
   seats: 8
 }, {
-  id: 'ua3456',
+  id: 'ual3456',
   departure: 'ORD',
   arrival: 'EWR',
   departureTime: '19:45',
@@ -91,7 +91,7 @@ const TABS = [{
 // Alternate airports within ~300 miles of EWR with sample options to Chicago (ORD/MDW)
 const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
   {
-    id: 'ue301',
+    id: 'uae301',
     departure: 'JFK',
     arrival: 'ORD',
     departureTime: '17:45',
@@ -103,7 +103,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 14
   },
   {
-    id: 'ua512',
+    id: 'ual512',
     departure: 'LGA',
     arrival: 'ORD',
     departureTime: '18:10',
@@ -115,7 +115,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 11
   },
   {
-    id: 'ue3670',
+    id: 'uae3670',
     departure: 'JFK',
     arrival: 'MDW',
     departureTime: '19:05',
@@ -151,7 +151,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 18
   },
   {
-    id: 'ua901',
+    id: 'ual901',
     departure: 'PHL',
     arrival: 'ORD',
     departureTime: '17:30',
@@ -163,7 +163,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 16
   },
   {
-    id: 'ua1412',
+    id: 'uae1412',
     departure: 'BDL',
     arrival: 'ORD',
     departureTime: '19:20',
@@ -175,7 +175,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 7
   },
   {
-    id: 'ue2183',
+    id: 'ual2183',
     departure: 'ALB',
     arrival: 'ORD',
     departureTime: '18:00',
@@ -187,7 +187,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 10
   },
   {
-    id: 'ua332',
+    id: 'uae332',
     departure: 'BWI',
     arrival: 'ORD',
     departureTime: '17:55',
@@ -199,7 +199,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 20
   },
   {
-    id: 'ua441',
+    id: 'ual441',
     departure: 'IAD',
     arrival: 'ORD',
     departureTime: '20:05',
@@ -215,7 +215,7 @@ const ALTERNATE_FLIGHT_OPTIONS: FlightOption[] = [
 // JV Alliance options to Chicago (ORD/MDW) from NY/NJ region and nearby hubs
 const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
   {
-    id: 'ua1288',
+    id: 'aa1288',
     departure: 'EWR',
     arrival: 'ORD',
     departureTime: '17:20',
@@ -227,7 +227,7 @@ const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 13
   },
   {
-    id: 'ua2196',
+    id: 'dl2196',
     departure: 'EWR',
     arrival: 'ORD',
     departureTime: '19:10',
@@ -239,7 +239,7 @@ const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 9
   },
   {
-    id: 'ua347',
+    id: 'sw347',
     departure: 'LGA',
     arrival: 'ORD',
     departureTime: '18:05',
@@ -251,7 +251,7 @@ const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 7
   },
   {
-    id: 'ua5102',
+    id: 'b65102',
     departure: 'HPN',
     arrival: 'ORD',
     departureTime: '18:30',
@@ -287,7 +287,7 @@ const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
     seats: 10
   },
   {
-    id: 'ua4410',
+    id: 'as4410',
     departure: 'IAD',
     arrival: 'ORD',
     departureTime: '20:05',
