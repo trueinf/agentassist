@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plane, Clock, MapPin, DollarSign, CheckCircle, AlertCircle, ArrowUpDown } from 'lucide-react';
+import { Plane, Clock, MapPin, DollarSign, CheckCircle, AlertCircle, ArrowUpDown, CreditCard, Gift, RefreshCw, Star } from 'lucide-react';
 interface FlightOption {
   id: string;
   departure: string;
@@ -84,8 +84,11 @@ const TABS = [{
   id: 'star-alliance',
   label: 'JV Alliance'
 }, {
-  id: 'refund',
-  label: 'Airline Website & Toll Number'
+  id: 'airline-info',
+  label: 'Airline Website'
+}, {
+  id: 'refund-options',
+  label: 'Refund Options'
 }] as any[];
 
 // Alternate airports within ~300 miles of EWR with sample options to Chicago (ORD/MDW)
@@ -300,8 +303,121 @@ const STAR_ALLIANCE_FLIGHT_OPTIONS: FlightOption[] = [
   }
 ];
 
+// Refund options data
+interface RefundOption {
+  id: string;
+  type: 'full' | 'partial' | 'credit' | 'voucher';
+  title: string;
+  description: string;
+  amount: string;
+  processingTime: string;
+  eligibility: string;
+  conditions: string[];
+  recommended?: boolean;
+}
+
+const REFUND_OPTIONS: RefundOption[] = [
+  {
+    id: 'full-refund',
+    type: 'full',
+    title: 'Full Cash Refund',
+    description: 'Complete refund to original payment method',
+    amount: '$485.00',
+    processingTime: '7-10 business days',
+    eligibility: 'Weather-related cancellation',
+    conditions: [
+      'Refund to original payment method',
+      'No processing fees',
+      'Includes taxes and fees',
+      'Available for weather disruptions'
+    ],
+    recommended: true
+  },
+  {
+    id: 'travel-credit',
+    type: 'credit',
+    title: 'Travel Credit + Bonus',
+    description: 'Future travel credit with additional value',
+    amount: '$550.00',
+    processingTime: 'Immediate',
+    eligibility: 'All passengers',
+    conditions: [
+      '120% of original ticket value',
+      'Valid for 12 months',
+      'Transferable to family members',
+      'No blackout dates',
+      'Can be combined with other offers'
+    ]
+  },
+  {
+    id: 'rebooking-waiver',
+    type: 'partial',
+    title: 'Free Rebooking',
+    description: 'Rebook to any available flight without fees',
+    amount: '$0 change fee',
+    processingTime: 'Immediate',
+    eligibility: 'Weather disruption',
+    conditions: [
+      'No change fees waived',
+      'Fare difference may apply',
+      'Valid for same route',
+      'Must travel within 1 year',
+      'Includes partner airlines'
+    ]
+  },
+  {
+    id: 'hotel-meals',
+    type: 'voucher',
+    title: 'Hotel + Meal Vouchers',
+    description: 'Accommodation and dining compensation',
+    amount: '$200 value',
+    processingTime: 'Immediate',
+    eligibility: 'Overnight delay',
+    conditions: [
+      'Hotel accommodation for 1 night',
+      '$50 meal vouchers',
+      'Ground transportation included',
+      'Valid at airport partner hotels',
+      'Must be stranded overnight'
+    ]
+  },
+  {
+    id: 'priority-rebooking',
+    type: 'credit',
+    title: 'Priority Rebooking + Credit',
+    description: 'First priority on next available flight plus credit',
+    amount: '$150 credit',
+    processingTime: 'Immediate',
+    eligibility: 'All passengers',
+    conditions: [
+      'Priority on standby lists',
+      'Complimentary seat upgrades',
+      '$150 future travel credit',
+      'Expedited baggage handling',
+      'Lounge access during delays'
+    ]
+  },
+  {
+    id: 'compensation-package',
+    type: 'voucher',
+    title: 'Complete Compensation Package',
+    description: 'Comprehensive compensation for major disruption',
+    amount: '$400 value',
+    processingTime: '24-48 hours',
+    eligibility: 'Extended delays (6+ hours)',
+    conditions: [
+      '$200 travel voucher',
+      'Hotel accommodation',
+      'Meal allowances',
+      'Ground transportation',
+      'Expedited customer service',
+      'Complimentary upgrade on rebooking'
+    ]
+  }
+];
+
 interface FlightRefundOptionsPanelProps {
-  activeTabOverride?: 'same-airport' | 'alternate' | 'star-alliance' | 'refund';
+  activeTabOverride?: 'same-airport' | 'alternate' | 'star-alliance' | 'airline-info' | 'refund-options';
   filterArrival?: string | null;
   highlightFlightId?: string | null;
 }
@@ -380,31 +496,33 @@ export const FlightRefundOptionsPanel = ({
 
       <div className="flex-1 overflow-hidden">
         <AnimatePresence mode="wait">
-          {activeTab === 'refund' ? <motion.div key="refund" className="p-6 h-full overflow-y-auto" initial={{
-          opacity: 0,
-          x: 20
-        }} animate={{
-          opacity: 1,
-          x: 0
-        }} exit={{
-          opacity: 0,
-          x: -20
-        }} transition={{
-          duration: 0.3
-        }}>
-              <div className="space-y-4">
-                <h3 className="font-semibold text-slate-800 mb-4">Airline Contact Information</h3>
-                {AIRLINE_INFO.map((airline, index) => <motion.div key={`airline-${index}`} className="border border-slate-200 rounded-lg p-4 hover:border-blue-300 transition-colors" initial={{
+          {activeTab === 'airline-info' ? (
+            <motion.div key="airline-info" className="p-6 h-full overflow-y-auto" initial={{
               opacity: 0,
-              y: 20
+              x: 20
             }} animate={{
               opacity: 1,
-              y: 0
+              x: 0
+            }} exit={{
+              opacity: 0,
+              x: -20
             }} transition={{
-              delay: index * 0.1
-            }} whileHover={{
-              scale: 1.02
+              duration: 0.3
             }}>
+              <div className="space-y-4">
+                <h3 className="font-semibold text-slate-800 mb-4">Airline Contact Information</h3>
+                {AIRLINE_INFO.map((airline, index) => (
+                  <motion.div key={`airline-${index}`} className="border border-slate-200 rounded-lg p-4 hover:border-blue-300 transition-colors" initial={{
+                    opacity: 0,
+                    y: 20
+                  }} animate={{
+                    opacity: 1,
+                    y: 0
+                  }} transition={{
+                    delay: index * 0.1
+                  }} whileHover={{
+                    scale: 1.02
+                  }}>
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
                         <Plane className="w-5 h-5 text-blue-600" />
@@ -431,20 +549,144 @@ export const FlightRefundOptionsPanel = ({
                         </a>
                       </div>
                     </div>
-                  </motion.div>)}
+                  </motion.div>
+                ))}
               </div>
-            </motion.div> : <motion.div key="flights" className="h-full flex flex-col" initial={{
-          opacity: 0,
-          x: 20
-        }} animate={{
-          opacity: 1,
-          x: 0
-        }} exit={{
-          opacity: 0,
-          x: -20
-        }} transition={{
-          duration: 0.3
-        }}>
+            </motion.div>
+          ) : activeTab === 'refund-options' ? (
+            <motion.div key="refund-options" className="p-6 h-full overflow-y-auto" initial={{
+              opacity: 0,
+              x: 20
+            }} animate={{
+              opacity: 1,
+              x: 0
+            }} exit={{
+              opacity: 0,
+              x: -20
+            }} transition={{
+              duration: 0.3
+            }}>
+              <div className="space-y-5">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-slate-800">Available Refund Options</h3>
+                  <div className="text-sm text-slate-600 bg-slate-50 px-3 py-1 rounded-full">Flight AA1234 - Weather Cancellation</div>
+                </div>
+                
+                {REFUND_OPTIONS.map((option, index) => {
+                  const getIcon = () => {
+                    switch (option.type) {
+                      case 'full': return <CreditCard className="w-5 h-5 text-green-600" />;
+                      case 'credit': return <Gift className="w-5 h-5 text-blue-600" />;
+                      case 'partial': return <RefreshCw className="w-5 h-5 text-orange-600" />;
+                      case 'voucher': return <Star className="w-5 h-5 text-purple-600" />;
+                      default: return <DollarSign className="w-5 h-5 text-slate-600" />;
+                    }
+                  };
+
+                  const getBorderColor = () => {
+                    if (option.recommended) return 'border-green-300 ring-2 ring-green-100';
+                    return 'border-slate-200 hover:border-blue-300';
+                  };
+
+                  return (
+                    <motion.div 
+                      key={option.id} 
+                      className={`border rounded-lg p-5 transition-all cursor-pointer shadow-sm hover:shadow-md ${getBorderColor()}`}
+                      initial={{
+                        opacity: 0,
+                        y: 20
+                      }} 
+                      animate={{
+                        opacity: 1,
+                        y: 0
+                      }} 
+                      transition={{
+                        delay: index * 0.1
+                      }} 
+                      whileHover={{
+                        scale: 1.02
+                      }}
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-start space-x-3 flex-1">
+                          {getIcon()}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-semibold text-slate-800 text-base">{option.title}</h4>
+                              {option.recommended && (
+                                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                                  Recommended
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-slate-600 leading-relaxed">{option.description}</p>
+                          </div>
+                        </div>
+                        <div className="text-right ml-4 flex-shrink-0">
+                          <div className="font-bold text-slate-800 text-lg">{option.amount}</div>
+                          <div className="text-xs text-slate-500 mt-1">{option.processingTime}</div>
+                        </div>
+                      </div>
+
+                      <div className="mb-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          <span className="text-sm font-medium text-slate-700">Eligibility: {option.eligibility}</span>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          {option.conditions.map((condition, condIndex) => (
+                            <div key={condIndex} className="flex items-start gap-3 text-sm text-slate-600">
+                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <span className="leading-relaxed">{condition}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between items-center pt-4 border-t border-slate-200">
+                        <span className={`text-sm px-3 py-1.5 rounded-full font-medium ${
+                          option.type === 'full' ? 'bg-green-100 text-green-700' :
+                          option.type === 'credit' ? 'bg-blue-100 text-blue-700' :
+                          option.type === 'partial' ? 'bg-orange-100 text-orange-700' :
+                          'bg-purple-100 text-purple-700'
+                        }`}>
+                          {option.type.charAt(0).toUpperCase() + option.type.slice(1)} Refund
+                        </span>
+                        <motion.button 
+                          className={`px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                            option.recommended 
+                              ? 'bg-green-600 hover:bg-green-700 text-white shadow-md' 
+                              : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md'
+                          }`}
+                          whileHover={{
+                            scale: 1.05
+                          }} 
+                          whileTap={{
+                            scale: 0.95
+                          }}
+                        >
+                          Select Option
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div key="flights" className="h-full flex flex-col" initial={{
+              opacity: 0,
+              x: 20
+            }} animate={{
+              opacity: 1,
+              x: 0
+            }} exit={{
+              opacity: 0,
+              x: -20
+            }} transition={{
+              duration: 0.3
+            }}>
               <div className="p-4 border-b border-slate-200">
                 <div className="flex items-center space-x-4">
                   <span className="text-sm font-medium text-slate-700">
@@ -563,7 +805,8 @@ export const FlightRefundOptionsPanel = ({
                     </motion.div>)}
                 </div>
               </div>
-            </motion.div>}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </div>;

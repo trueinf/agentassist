@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Clock, Tag, ChevronRight, MapPin, AlertTriangle, Play, Pause, SkipForward, SkipBack, Volume2 } from 'lucide-react';
+import { Mail, Clock, Tag, ChevronRight, MapPin, AlertTriangle, Play, Pause, SkipForward, SkipBack, Volume2, Filter, ChevronDown } from 'lucide-react';
 import { TopBanner } from './TopBanner';
 import { CallerTranscriptPanel } from './CallerTranscriptPanel';
 import { FlightRefundOptionsPanel } from './FlightRefundOptionsPanel';
@@ -129,8 +129,77 @@ const DUMMY_EMAILS = [
     category: "compensation",
     summary: "Comprehensive compensation package for weather disruption including $200 travel credit, hotel accommodation, meals, and priority rebooking. Full passenger rights outlined.",
     resolution: "As compensation for this weather disruption, you'll receive: $200 travel credit for future American Airlines flights, complimentary upgrade on your rebooked flight (when available), hotel and meal accommodations, and expedited baggage handling. To claim your compensation, call 1-800-433-7300 or visit aa.com/feedback. Your satisfaction is our priority."
+  },
+  {
+    id: 6,
+    from: "notifications@aa.com",
+    subject: "Flight Delay Notification - AA2567 ORD to LAX",
+    timestamp: "2024-01-15 11:15",
+    content: "Dear Valued Customer,\n\nWe regret to inform you that your flight AA2567 scheduled to depart from Chicago O'Hare (ORD) to Los Angeles International (LAX) at 2:45 PM has been delayed due to severe winter weather conditions affecting the Chicago area.\n\nNew estimated departure time: 5:30 PM\nReason: Winter storm causing ground delays and aircraft de-icing requirements\nCurrent status: Awaiting runway clearance\n\nFlight Details:\n- Original departure: 2:45 PM CST\n- New departure: 5:30 PM CST\n- Estimated arrival: 7:15 PM PST (originally 4:30 PM PST)\n- Gate: B12\n\nWe apologize for any inconvenience this may cause to your travel plans. Complimentary snacks and beverages will be available at the gate.\n\nBest regards,\nAmerican Airlines Customer Service",
+    category: "delay",
+    summary: "Flight AA2567 to Los Angeles delayed from 2:45 PM to 5:30 PM due to winter weather. Ground delays and de-icing procedures causing extended wait times.",
+    resolution: "Your flight to Los Angeles is delayed by 2 hours and 45 minutes due to severe winter weather in Chicago. The new departure time is 5:30 PM CST, arriving at 7:15 PM PST. Please remain near gate B12 for updates. Complimentary refreshments are available while you wait."
+  },
+  {
+    id: 7,
+    from: "rebooking@aa.com",
+    subject: "Alternative Flight Options - AA8901 ORD to MIA",
+    timestamp: "2024-01-15 09:30",
+    content: "Hello,\n\nDue to the ongoing winter weather disruptions at Chicago O'Hare, your flight AA8901 to Miami International Airport (MIA) scheduled for 1:20 PM departure has been impacted.\n\nCurrent Status: Delayed until further notice\nReason: Crew scheduling conflicts due to weather-related delays\n\nAlternative Options Available:\n\n1. Same-day alternatives:\n   - AA8903 departing 7:45 PM (confirmed seats available)\n   - UA1205 departing 8:20 PM (partner airline, no change fee)\n\n2. Next-day options:\n   - AA8901 rescheduled to tomorrow 6:30 AM\n   - AA8905 departing tomorrow 12:15 PM\n\n3. Routing alternatives:\n   - Connect via Dallas (DFW): AA1234 + AA5678\n   - Connect via Charlotte (CLT): AA2345 + AA6789\n\nAll rebooking options are available with no change fees due to weather waiver policy. Hotel accommodations available for overnight stays.\n\nTo confirm your preferred option, please visit our rebooking counter at Terminal 3 or call 1-800-433-7300.\n\nThank you for your patience,\nAmerican Airlines Rebooking Team",
+    category: "rebooking",
+    summary: "AA8901 to Miami delayed indefinitely due to crew scheduling issues from weather. Multiple same-day and next-day alternatives available with no change fees.",
+    resolution: "Your Miami flight is delayed due to crew scheduling conflicts caused by weather disruptions. Best options: 1) AA8903 tonight at 7:45 PM, 2) Original flight rescheduled to tomorrow 6:30 AM, or 3) Connecting flights via Dallas or Charlotte. All changes are free under weather waiver. Hotel provided if you choose tomorrow's option."
+  },
+  {
+    id: 8,
+    from: "alerts@aa.com",
+    subject: "Flight Cancellation - AA4432 ORD to DEN",
+    timestamp: "2024-01-15 14:50",
+    content: "FLIGHT CANCELLATION NOTICE\n\nDear Customer,\n\nWe regret to inform you that flight AA4432 from Chicago O'Hare (ORD) to Denver International Airport (DEN) scheduled for January 15, 2024, at 4:15 PM has been cancelled.\n\nCancellation Details:\n- Flight: AA4432 ORD-DEN\n- Scheduled departure: 4:15 PM CST\n- Reason: Aircraft mechanical issue discovered during pre-flight inspection\n- Safety priority: Unable to secure replacement aircraft in time\n\nImmediate Rebooking Options:\n\n1. Tonight's alternatives:\n   - UA892 departing 6:30 PM (partner airline, 2 seats left)\n   - F91205 departing 8:45 PM (Frontier, budget option)\n\n2. Tomorrow's options:\n   - AA4432 rescheduled to 7:00 AM\n   - AA4434 departing 11:30 AM\n   - AA4436 departing 3:20 PM\n\nCompensation Available:\n- Full refund (processed within 24 hours)\n- $300 travel voucher for future flights\n- Hotel accommodation if overnight stay required\n- Ground transportation to/from hotel\n- Priority boarding on rebooked flight\n\nTo process your rebooking or refund, please visit our service desk at Terminal 3, Level 2, or contact our dedicated rebooking line at 1-800-433-7300.\n\nWe sincerely apologize for this disruption and appreciate your understanding.\n\nAmerican Airlines Operations Team",
+    category: "cancellation",
+    summary: "AA4432 to Denver cancelled due to aircraft mechanical issue. Multiple rebooking options available tonight and tomorrow. $300 travel voucher offered as compensation.",
+    resolution: "Your Denver flight was cancelled due to a safety-related mechanical issue that couldn't be resolved in time. Options: 1) Tonight on UA892 at 6:30 PM or Frontier at 8:45 PM, 2) Tomorrow's AA flights at 7:00 AM, 11:30 AM, or 3:20 PM, or 3) Full refund. You'll receive a $300 travel voucher plus hotel/meals if staying overnight."
   }
 ];
+
+// Helper functions for email filtering
+const extractDestinationsFromEmail = (email: any) => {
+  const subject = email.subject.toLowerCase();
+  const content = email.content.toLowerCase();
+  
+  // Extract from/to information from subject and content
+  let from = '';
+  let to = '';
+  
+  // Check for Chicago origins
+  if (subject.includes('ord') || content.includes("chicago o'hare") || content.includes('chicago')) {
+    from = 'chicago';
+  }
+  
+  // Check for destinations
+  if (subject.includes('lga') || subject.includes('jfk') || subject.includes('ewr') || 
+      content.includes('new york') || content.includes('laguardia') || content.includes('newark')) {
+    to = 'new york';
+  } else if (subject.includes('lax') || content.includes('los angeles')) {
+    to = 'los angeles';
+  } else if (subject.includes('mia') || content.includes('miami')) {
+    to = 'miami';
+  } else if (subject.includes('den') || content.includes('denver')) {
+    to = 'denver';
+  }
+  
+  return { from, to };
+};
+
+const getUniqueDestinations = (emails: any[], type: 'from' | 'to') => {
+  const destinations = new Set<string>();
+  emails.forEach(email => {
+    const { from, to } = extractDestinationsFromEmail(email);
+    if (type === 'from' && from) destinations.add(from);
+    if (type === 'to' && to) destinations.add(to);
+  });
+  return Array.from(destinations).sort();
+};
 
 // @component: AgentAssistApp
 export const AgentAssistApp = () => {
@@ -144,6 +213,10 @@ export const AgentAssistApp = () => {
   const [submittedPnr, setSubmittedPnr] = useState('');
   const [autoAgentMessageShown, setAutoAgentMessageShown] = useState(false);
   
+  // Email filter states
+  const [fromFilter, setFromFilter] = useState<string>('all');
+  const [toFilter, setToFilter] = useState<string>('all');
+  
   // Audio player state
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -151,13 +224,6 @@ export const AgentAssistApp = () => {
   const [audioSrc, setAudioSrc] = useState(audioFile);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Auto-select first email when switching to update tab
-  React.useEffect(() => {
-    if (activeTab === 'update' && selectedEmail === null) {
-      setSelectedEmail(1); // Select the first email (ID: 1)
-    }
-  }, [activeTab, selectedEmail]);
-  
   // Auto agent message after 5 seconds for Play 1 (only if PNR not already provided)
   React.useEffect(() => {
     if (currentTurn === 0 && activeTab === 'overview' && !autoAgentMessageShown && !pnrProvided) {
@@ -211,6 +277,29 @@ export const AgentAssistApp = () => {
         return [] as any[];
     }
   }, [currentTurn]);
+
+  // Get unique destinations for filter dropdowns
+  const fromDestinations = useMemo(() => getUniqueDestinations(DUMMY_EMAILS, 'from'), []);
+  const toDestinations = useMemo(() => getUniqueDestinations(DUMMY_EMAILS, 'to'), []);
+
+  // Filter emails based on selected from/to destinations
+  const filteredEmails = useMemo(() => {
+    return DUMMY_EMAILS.filter(email => {
+      const { from, to } = extractDestinationsFromEmail(email);
+      
+      const fromMatch = fromFilter === 'all' || from === fromFilter;
+      const toMatch = toFilter === 'all' || to === toFilter;
+      
+      return fromMatch && toMatch;
+    });
+  }, [fromFilter, toFilter]);
+
+  // Auto-select first email when switching to update tab or filters change
+  React.useEffect(() => {
+    if (activeTab === 'update' && selectedEmail === null && filteredEmails.length > 0) {
+      setSelectedEmail(filteredEmails[0].id);
+    }
+  }, [activeTab, selectedEmail, filteredEmails]);
   
   // PNR handling functions
   const handlePnrSubmit = () => {
@@ -451,8 +540,8 @@ export const AgentAssistApp = () => {
       {/* Tab Content */}
       {activeTab === 'overview' && (
         <>
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto w-full">
-            <motion.div className="lg:col-span-1" initial={{
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-6 p-6 max-w-7xl mx-auto w-full">
+            <motion.div className="lg:col-span-2" initial={{
               opacity: 0,
               x: -20
             }} animate={{
@@ -516,7 +605,7 @@ export const AgentAssistApp = () => {
           <AICoPilotPanel suggestions={callData.suggestions} scripts={scriptsForTurn as any} />
         </motion.div>
 
-            <motion.div className="lg:col-span-1" initial={{
+            <motion.div className="lg:col-span-2" initial={{
               opacity: 0,
               x: 20
             }} animate={{
@@ -663,10 +752,72 @@ export const AgentAssistApp = () => {
                 <Mail className="w-5 h-5" />
                 Flight Communication Updates
               </h3>
-              <p className="text-sm text-slate-500 mt-1">Recent emails regarding AA1234</p>
+              <p className="text-sm text-slate-500 mt-1">Recent emails regarding flight communications</p>
+              
+              {/* Filter Controls */}
+              <div className="flex items-center gap-4 mt-4 p-3 bg-slate-50 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-slate-600" />
+                  <span className="text-sm font-medium text-slate-700">Filter by:</span>
+                </div>
+                
+                {/* From Filter */}
+                <div className="relative">
+                  <select
+                    value={fromFilter}
+                    onChange={(e) => setFromFilter(e.target.value)}
+                    className="appearance-none bg-white border border-slate-300 rounded-md px-3 py-1.5 pr-8 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="all">All Origins</option>
+                    {fromDestinations.map(dest => (
+                      <option key={dest} value={dest}>
+                        {dest.charAt(0).toUpperCase() + dest.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+                </div>
+                
+                <span className="text-sm text-slate-500">to</span>
+                
+                {/* To Filter */}
+                <div className="relative">
+                  <select
+                    value={toFilter}
+                    onChange={(e) => setToFilter(e.target.value)}
+                    className="appearance-none bg-white border border-slate-300 rounded-md px-3 py-1.5 pr-8 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="all">All Destinations</option>
+                    {toDestinations.map(dest => (
+                      <option key={dest} value={dest}>
+                        {dest.charAt(0).toUpperCase() + dest.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
+                </div>
+                
+                {/* Clear Filters Button */}
+                {(fromFilter !== 'all' || toFilter !== 'all') && (
+                  <button
+                    onClick={() => {
+                      setFromFilter('all');
+                      setToFilter('all');
+                    }}
+                    className="text-xs text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Clear filters
+                  </button>
+                )}
+                
+                {/* Results Count */}
+                <span className="text-xs text-slate-500 ml-auto">
+                  {filteredEmails.length} email{filteredEmails.length !== 1 ? 's' : ''}
+                </span>
+              </div>
             </div>
             <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
-              {DUMMY_EMAILS.map((email) => (
+              {filteredEmails.map((email) => (
                 <motion.div
                   key={email.id}
                   className={`p-4 cursor-pointer transition-colors hover:bg-slate-50 ${
