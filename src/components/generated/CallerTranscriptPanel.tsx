@@ -107,6 +107,40 @@ export const CallerTranscriptPanel = ({
             </div>
           </motion.div>
 
+          {/* Agent Behaviour Attributes */}
+          <motion.div
+            className="bg-slate-50 rounded-lg p-4 border border-slate-200"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+          >
+            <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-blue-600" />
+              Agent Behaviour Attributes
+            </h4>
+            <div className="space-y-2">
+              {[
+                'Listen Actively',
+                'Understanding the issue',
+                'Conveying Interest and Empathy',
+                'Control the conversation',
+                'Offers appropriate ancillary offers',
+                'Comply with regulatory requirements'
+              ].map((attribute, index) => (
+                <motion.div
+                  key={attribute}
+                  className="flex items-center space-x-2"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2, delay: index * 0.1 }}
+                >
+                  <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                  <span className="text-sm text-slate-700">{attribute}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
           <motion.div className="space-y-3" initial={{
           opacity: 0,
           y: 10
