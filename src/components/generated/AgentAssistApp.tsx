@@ -472,7 +472,7 @@ export const AgentAssistApp = () => {
       
       {/* Tab Navigation with Location Info */}
       <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-none mx-auto px-8">
           <div className="flex items-center justify-between">
             {/* Left side - Tabs */}
             <div className="flex space-x-8">
@@ -540,7 +540,7 @@ export const AgentAssistApp = () => {
       {/* Tab Content */}
       {activeTab === 'overview' && (
         <>
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-6 p-6 max-w-7xl mx-auto w-full">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-6 gap-6 p-6 max-w-none mx-auto w-full px-8">
             <motion.div className="lg:col-span-2" initial={{
               opacity: 0,
               x: -20
@@ -592,7 +592,7 @@ export const AgentAssistApp = () => {
           />
         </motion.div>
 
-            <motion.div className="lg:col-span-1" initial={{
+            <motion.div className="lg:col-span-2" initial={{
               opacity: 0,
               y: 20
             }} animate={{
@@ -632,7 +632,7 @@ export const AgentAssistApp = () => {
             duration: 0.5,
             delay: 0.3
           }}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-none mx-auto flex items-center justify-between px-8">
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-slate-700 mb-2">
               <span>Interaction Summary</span>
@@ -658,7 +658,7 @@ export const AgentAssistApp = () => {
 
       {/* Update Tab Content - Email Interface */}
       {activeTab === 'update' && (
-        <div className="flex-1 p-6 max-w-7xl mx-auto w-full">
+        <div className="flex-1 p-6 max-w-none mx-auto w-full px-8">
           {/* Header with Audio Player on Right */}
           <div className="flex items-start justify-between mb-6">
             <div className="flex-1"></div>
