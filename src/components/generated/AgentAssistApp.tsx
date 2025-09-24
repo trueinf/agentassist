@@ -25,27 +25,27 @@ const MOCK_CALL_PROGRESSION = [{
   event: "Winter Storm Alert - ORD Operations Suspended",
   transcript: [{
     speaker: "Customer",
-    text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
+    text: "Hi, I'm calling about my flight UAL1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
   }],
   sentiment: 0.85,
   intent: ["Rebooking", "Information"],
   likelihood: "85% likely to accept rebooking",
   suggestions: ["Acknowledge cancellation", "Offer rebooking options", "Check waiver eligibility"],
-  caseNotes: ["Flight AA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking"]
+  caseNotes: ["Flight UAL1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking"]
 }, {
   location: "Chicago, IL",
   event: "Winter Storm Alert - ORD Operations Suspended",
   transcript: [{
     speaker: "Customer",
-    text: "Hi, I'm calling about my flight AA1234 from Chicago to New York that was cancelled.",
+    text: "Hi, I'm calling about my flight UAL1234 from Chicago to New York that was cancelled.",
     timestamp: "14:32:15"
   }],
   sentiment: 0.88,
   intent: ["Rebooking", "Urgency", "Same-day travel"],
   likelihood: "70% likely to accept JFK option",
   suggestions: ["Offer same-day alternatives", "Check JFK availability", "Mention waiver policy"],
-  caseNotes: ["Flight AA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed"]
+  caseNotes: ["Flight UAL1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed"]
 }, {
   location: "Chicago, IL",
   event: "Winter Storm Alert - ORD Operations Suspended",
@@ -58,7 +58,7 @@ const MOCK_CALL_PROGRESSION = [{
   intent: ["Rebooking", "Cost inquiry", "Acceptance"],
   likelihood: "95% likely to accept 6:15 PM JFK flight",
   suggestions: ["Confirm no change fee due to waiver", "Process rebooking", "Offer seat selection"],
-  caseNotes: ["Flight AA1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed", "Interested in 6:15 PM JFK flight"]
+  caseNotes: ["Flight UAL1234 ORD-LGA cancelled due to weather", "Customer seeking rebooking", "Urgent same-day travel needed", "Interested in 6:15 PM JFK flight"]
 }, {
   location: "Chicago, IL",
   event: "Winter Storm Alert - ORD Operations Suspended",
@@ -83,11 +83,11 @@ const DUMMY_EMAILS = [
   {
     id: 1,
     from: "notifications@aa.com",
-    subject: "Flight Delay Notification - AA1234",
+    subject: "Flight Delay Notification - UAL1234",
     timestamp: "2024-01-15 13:45",
     content: "Dear Valued Customer,\n\nWe regret to inform you that your flight AA1234 scheduled to depart from Chicago O'Hare (ORD) to New York LaGuardia (LGA) at 3:30 PM has been delayed due to severe winter weather conditions affecting the Chicago area.\n\nNew estimated departure time: 6:15 PM\nReason: Winter storm with heavy snow and strong winds\nCurrent status: Aircraft de-icing in progress\n\nWe apologize for any inconvenience this may cause and appreciate your patience during these challenging weather conditions.\n\nBest regards,\nAmerican Airlines Customer Service",
     category: "delay",
-    summary: "Flight AA1234 delayed from 3:30 PM to 6:15 PM due to winter storm conditions in Chicago. Aircraft currently undergoing de-icing procedures.",
+    summary: "Flight UAL1234 delayed from 3:30 PM to 6:15 PM due to winter storm conditions in Chicago. Aircraft currently undergoing de-icing procedures.",
     resolution: "This delay occurred due to severe winter weather conditions with heavy snow and strong winds at Chicago O'Hare. Your new departure time is 6:15 PM today. The aircraft is currently undergoing mandatory de-icing procedures for safety. We recommend arriving at the gate 30 minutes before the new departure time."
   },
   {
@@ -113,7 +113,7 @@ const DUMMY_EMAILS = [
   {
     id: 4,
     from: "notifications@aa.com",
-    subject: "Flight Cancellation - AA1234 ORD to LGA",
+    subject: "Flight Cancellation - UAL1234 ORD to LGA",
     timestamp: "2024-01-15 15:45",
     content: "Dear Customer,\n\nWe regret to inform you that flight AA1234 from Chicago O'Hare (ORD) to New York LaGuardia (LGA) originally scheduled for January 15, 2024, has been cancelled due to continued severe weather conditions.\n\nCancellation Details:\n- Original flight: AA1234, January 15, 3:30 PM departure\n- Reason: Winter storm - unsafe operating conditions\n- Airport closure: Extended ground stop at ORD\n\nImmediate Actions:\n1. Full refund automatically processed (5-7 business days)\n2. Rebooking options available at no additional cost\n3. Hotel accommodations available for stranded passengers\n4. Meal vouchers provided for delays over 3 hours\n\nRecommended Alternatives:\n- UAL1456 departing tomorrow at 7:30 AM\n- UAL1892 departing tomorrow at 11:15 AM\n- Alternative airports: JFK and EWR options available\n\nWe sincerely apologize for this disruption to your travel plans and appreciate your understanding during these exceptional circumstances.\n\nAmerican Airlines Operations",
     category: "cancellation",
@@ -137,7 +137,7 @@ const DUMMY_EMAILS = [
     timestamp: "2024-01-15 11:15",
     content: "Dear Valued Customer,\n\nWe regret to inform you that your flight AA2567 scheduled to depart from Chicago O'Hare (ORD) to Los Angeles International (LAX) at 2:45 PM has been delayed due to severe winter weather conditions affecting the Chicago area.\n\nNew estimated departure time: 5:30 PM\nReason: Winter storm causing ground delays and aircraft de-icing requirements\nCurrent status: Awaiting runway clearance\n\nFlight Details:\n- Original departure: 2:45 PM CST\n- New departure: 5:30 PM CST\n- Estimated arrival: 7:15 PM PST (originally 4:30 PM PST)\n- Gate: B12\n\nWe apologize for any inconvenience this may cause to your travel plans. Complimentary snacks and beverages will be available at the gate.\n\nBest regards,\nAmerican Airlines Customer Service",
     category: "delay",
-    summary: "Flight AA2567 to Los Angeles delayed from 2:45 PM to 5:30 PM due to winter weather. Ground delays and de-icing procedures causing extended wait times.",
+    summary: "Flight UAL2567 to Los Angeles delayed from 2:45 PM to 5:30 PM due to winter weather. Ground delays and de-icing procedures causing extended wait times.",
     resolution: "Your flight to Los Angeles is delayed by 2 hours and 45 minutes due to severe winter weather in Chicago. The new departure time is 5:30 PM CST, arriving at 7:15 PM PST. Please remain near gate B12 for updates. Complimentary refreshments are available while you wait."
   },
   {
@@ -644,13 +644,6 @@ export const AgentAssistApp = () => {
                 </div>)}
             </div>
           </div>
-          <motion.button onClick={handleSendConfirmation} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors" whileHover={{
-          scale: 1.02
-        }} whileTap={{
-          scale: 0.98
-        }}>
-            <span>Send Confirmation</span>
-          </motion.button>
         </div>
           </motion.div>
         </>
