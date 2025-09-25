@@ -120,22 +120,49 @@ export const CallerTranscriptPanel = ({
             </h4>
             <div className="space-y-2">
               {[
-                'Listen Actively',
-                'Understanding the issue',
-                'Conveying Interest and Empathy',
-                'Control the conversation',
-                'Offers appropriate ancillary offers',
-                'Comply with regulatory requirements'
+                { name: 'Listen Actively', percentage: 92 },
+                { name: 'Understanding the issue', percentage: 88 },
+                { name: 'Conveying Interest and Empathy', percentage: 95 },
+                { name: 'Control the conversation', percentage: 85 },
+                { name: 'Offers appropriate ancillary offers', percentage: 85 },
+                { name: 'Comply with regulatory requirements', percentage: 96 }
               ].map((attribute, index) => (
                 <motion.div
-                  key={attribute}
-                  className="flex items-center space-x-2"
+                  key={attribute.name}
+                  className="flex items-center justify-between space-x-3"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2, delay: index * 0.1 }}
                 >
-                  <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                  <span className="text-sm text-slate-700">{attribute}</span>
+                  <div className="flex items-center space-x-2 flex-1">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                      attribute.percentage >= 90 ? 'bg-green-500' : 
+                      attribute.percentage >= 80 ? 'bg-yellow-500' : 
+                      'bg-red-500'
+                    }`}></div>
+                    <span className="text-sm text-slate-700">{attribute.name}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-16 bg-slate-200 rounded-full h-1.5">
+                      <motion.div 
+                        className={`h-1.5 rounded-full ${
+                          attribute.percentage >= 90 ? 'bg-green-500' : 
+                          attribute.percentage >= 80 ? 'bg-yellow-500' : 
+                          'bg-red-500'
+                        }`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${attribute.percentage}%` }}
+                        transition={{ duration: 0.8, delay: index * 0.1 + 0.3 }}
+                      />
+                    </div>
+                    <span className={`text-xs font-semibold min-w-[2rem] text-right ${
+                      attribute.percentage >= 90 ? 'text-green-600' : 
+                      attribute.percentage >= 80 ? 'text-yellow-600' : 
+                      'text-red-600'
+                    }`}>
+                      {attribute.percentage}%
+                    </span>
+                  </div>
                 </motion.div>
               ))}
             </div>
