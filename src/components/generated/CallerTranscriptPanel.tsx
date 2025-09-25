@@ -121,10 +121,10 @@ export const CallerTranscriptPanel = ({
             <div className="space-y-2">
               {[
                 { name: 'Listen Actively', percentage: 92 },
-                { name: 'Understanding the issue', percentage: 88 },
+                { name: 'Understanding the issue', percentage: 92 },
                 { name: 'Conveying Interest and Empathy', percentage: 95 },
-                { name: 'Control the conversation', percentage: 85 },
-                { name: 'Offers appropriate ancillary offers', percentage: 85 },
+                { name: 'Control the conversation', percentage: 90 },
+                { name: 'Offers appropriate ancillary offers', percentage: 77 },
                 { name: 'Comply with regulatory requirements', percentage: 96 }
               ].map((attribute, index) => (
                 <motion.div
@@ -137,7 +137,7 @@ export const CallerTranscriptPanel = ({
                   <div className="flex items-center space-x-2 flex-1">
                     <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                       attribute.percentage >= 90 ? 'bg-green-500' : 
-                      attribute.percentage >= 80 ? 'bg-yellow-500' : 
+                      attribute.percentage >= 85 ? 'bg-red-500' : 
                       'bg-red-500'
                     }`}></div>
                     <span className="text-sm text-slate-700">{attribute.name}</span>
@@ -147,7 +147,7 @@ export const CallerTranscriptPanel = ({
                       <motion.div 
                         className={`h-1.5 rounded-full ${
                           attribute.percentage >= 90 ? 'bg-green-500' : 
-                          attribute.percentage >= 80 ? 'bg-yellow-500' : 
+                          attribute.percentage >= 85 ? 'bg-red-500' : 
                           'bg-red-500'
                         }`}
                         initial={{ width: 0 }}
@@ -157,7 +157,7 @@ export const CallerTranscriptPanel = ({
                     </div>
                     <span className={`text-xs font-semibold min-w-[2rem] text-right ${
                       attribute.percentage >= 90 ? 'text-green-600' : 
-                      attribute.percentage >= 80 ? 'text-yellow-600' : 
+                      attribute.percentage >= 85 ? 'text-red-600' : 
                       'text-red-600'
                     }`}>
                       {attribute.percentage}%
